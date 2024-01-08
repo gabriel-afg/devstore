@@ -4,9 +4,12 @@ import com.dev.backend.devstore.domain.user.User;
 import com.dev.backend.devstore.domain.user.UserResponseDTO;
 import com.dev.backend.devstore.repositories.UserRepository;
 import com.dev.backend.devstore.util.RandomString;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.io.UnsupportedEncodingException;
 
 @Service
 public class UserService {
@@ -17,7 +20,10 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public UserResponseDTO registerUser(User user){
+    @Autowired
+    private EmailService emailService;
+
+    public UserResponseDTO registerUser(User user) throws MessagingException, UnsupportedEncodingException {
         if(userRepository.findByEmail(user.getEmail()) != null){
             throw new RuntimeException("Email already in use");
         }else {
@@ -30,6 +36,8 @@ public class UserService {
 
             User savedUser = userRepository.save(user);
 
+            emailService.sendVerificationEmail(user);
+
             return new UserResponseDTO(
                     savedUser.getId(),
                     savedUser.getName(),
@@ -40,6 +48,21 @@ public class UserService {
                     savedUser.getVerificationCode(),
                     savedUser.getRole()
             );
+        }
+    }
+
+    public boolean verify(String verificationCode){
+        User user = userRepository.findByVerificationCode(verificationCode);
+
+        if (user == null || user.isEnabled()){
+            return false;
+        }
+        else {
+            user.setVerificationCode(null);
+            user.setEnabled(true);
+            userRepository.save(user);
+
+            return true;
         }
     }
 }

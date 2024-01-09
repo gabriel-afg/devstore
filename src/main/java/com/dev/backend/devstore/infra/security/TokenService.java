@@ -45,6 +45,19 @@ public class TokenService {
         }
     }
 
+    public String getIdUser(String token) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            return JWT.require(algorithm)
+                    .withIssuer("auth-api")
+                    .build()
+                    .verify(token)
+                    .getClaim("id").asString();
+        } catch (JWTVerificationException exception){
+            throw new RuntimeException("Erro ao pegar o id no token", exception);
+        }
+    }
+
     private Instant genExpirationDate(){
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
     }

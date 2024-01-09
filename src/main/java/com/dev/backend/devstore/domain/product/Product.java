@@ -20,6 +20,7 @@ public class Product {
     private String slug;
     private Integer price;
     private String description;
+    private Boolean featured;
     private String image;
 
     public Product(ProductRequestDTO data){
@@ -27,6 +28,7 @@ public class Product {
         this.title = data.title();
         this.slug = data.slug();
         this.image = data.image();
+        this.featured = data.featured();
         this.price = data.price();
     }
 }

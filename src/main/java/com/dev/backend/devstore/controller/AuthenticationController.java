@@ -30,18 +30,9 @@ public class AuthenticationController {
         try {
             var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
 
-            System.out.println(usernamePassword.getPrincipal());
-            System.out.println(usernamePassword.getCredentials());
-            System.out.println(usernamePassword.isAuthenticated());
-            System.out.println("ta aqui");
-
             var auth = authenticationManager.authenticate(usernamePassword);
 
-            System.out.println("ta aqui2");
-
             var token = tokenService.generateToken((User)auth.getPrincipal());
-
-            System.out.println("ta aqui3");
 
             return ResponseEntity.ok(new LoginResponseDTO(token));
         }catch (Exception e) {

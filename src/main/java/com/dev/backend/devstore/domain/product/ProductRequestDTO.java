@@ -12,6 +12,8 @@ public record ProductRequestDTO(
         @Nonnull
         String image,
         @Nonnull
+        Boolean featured,
+        @Nonnull
         Integer price
 ) {
 

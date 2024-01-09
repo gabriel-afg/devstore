@@ -6,6 +6,7 @@ public record ProductResponseDTO(
         String slug,
         String description,
         String image,
+        Boolean featured,
         Integer price
 ) {
     public ProductResponseDTO(Product product){
@@ -15,6 +16,7 @@ public record ProductResponseDTO(
                 product.getSlug(),
                 product.getDescription(),
                 product.getImage(),
+                product.getFeatured(),
                 product.getPrice()
         );
     }

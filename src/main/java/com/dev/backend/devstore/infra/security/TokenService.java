@@ -23,6 +23,7 @@ public class TokenService {
             String token = JWT.create()
                     .withIssuer("auth-api")
                     .withSubject(user.getEmail())
+                    .withClaim("id", user.getId())
                     .withExpiresAt(genExpirationDate())
                     .sign(algorithm);
             return token;
@@ -40,7 +41,7 @@ public class TokenService {
                     .verify(token)
                     .getSubject();
         } catch (JWTVerificationException exception){
-            return "";
+            throw new RuntimeException("Erro ao validar o token", exception);
         }
     }
 

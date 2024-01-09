@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -64,5 +65,9 @@ public class UserService {
 
             return true;
         }
+    }
+
+    public Optional<User> findById(String id){
+        return this.userRepository.findById(id);
     }
 }

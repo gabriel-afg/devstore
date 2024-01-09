@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
@@ -26,6 +27,13 @@ public class UserController {
         User user = new User(data);
         UserResponseDTO userSaved = userService.registerUser(user);
         return new ResponseEntity<>(userSaved, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Optional<User>> findUserById(@PathVariable String id){
+        Optional<User> user = this.userService.findById(id);
+
+        return ResponseEntity.ok(user);
     }
 
     @GetMapping("/verify")

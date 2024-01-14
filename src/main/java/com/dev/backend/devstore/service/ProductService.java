@@ -25,7 +25,7 @@ public class ProductService {
         return productRepository.findAll().stream().map(ProductResponseDTO::new).toList();
     }
 
-    public List<ProductResponseDTO> listProductByTitle(String title){
-        return productRepository.findAllByTitle(title).stream().map(ProductResponseDTO::new).toList();
+    public List<ProductResponseDTO> listProductByTitle(String title) {
+        return productRepository.findByTitleContainingIgnoreCase(title).stream().map(ProductResponseDTO::new).toList();
     }
 }

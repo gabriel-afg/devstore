@@ -24,8 +24,8 @@ public class ProductController {
         return ResponseEntity.ok(this.service.listProduct());
     }
 
-    @GetMapping("/{title}")
-    public ResponseEntity<List<ProductResponseDTO>> listPerId(@PathVariable @Valid String title){
+    @GetMapping("/search")
+    public ResponseEntity<List<ProductResponseDTO>> listPerTitle(@RequestParam("q") @Valid String title){
         return ResponseEntity.ok(this.service.listProductByTitle(title));
     }
 

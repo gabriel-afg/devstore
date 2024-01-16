@@ -10,4 +10,16 @@ public record UserResponseDTO(
         String verificationCode,
         UserRole role
 ){
+    public static UserResponseDTO fromUser(User user) {
+        return new UserResponseDTO(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getPassword(),
+                user.getAddress(),
+                user.getPhone(),
+                user.getVerificationCode(),
+                user.getRole()
+        );
+    }
 }

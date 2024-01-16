@@ -43,6 +43,18 @@ public class User implements UserDetails {
         this.role = data.role();
     }
 
+    public void updateUser(UpdateUserDTO data){
+        if (data.name() != null){
+            this.name = data.name();
+        }
+        if (data.address() != null){
+            this.address = data.address();
+        }
+        if (data.phone() != null){
+            this.phone = data.phone();
+        }
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (this.role == UserRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));

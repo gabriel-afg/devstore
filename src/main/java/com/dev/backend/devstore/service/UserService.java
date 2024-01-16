@@ -1,5 +1,6 @@
 package com.dev.backend.devstore.service;
 
+import com.dev.backend.devstore.domain.user.UpdateUserDTO;
 import com.dev.backend.devstore.domain.user.User;
 import com.dev.backend.devstore.domain.user.UserResponseDTO;
 import com.dev.backend.devstore.repositories.UserRepository;
@@ -69,5 +70,26 @@ public class UserService {
 
     public Optional<User> findById(String id){
         return this.userRepository.findById(id);
+    }
+
+    public UserResponseDTO updateUser(UpdateUserDTO data) {
+        User user = userRepository.findById(data.id()).orElse(null);
+        if (user == null) {
+            return null;
+        }
+
+        if (data.name() != null) {
+            user.setName(data.name());
+        }
+        if (data.address() != null) {
+            user.setAddress(data.address());
+        }
+        if (data.phone() != null) {
+            user.setPhone(data.phone());
+        }
+
+        User updatedUser = userRepository.save(user);
+
+        return UserResponseDTO.fromUser(updatedUser);
     }
 }

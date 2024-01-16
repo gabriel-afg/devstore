@@ -1,9 +1,11 @@
 package com.dev.backend.devstore.controller;
 
+import com.dev.backend.devstore.domain.user.UpdateUserDTO;
 import com.dev.backend.devstore.domain.user.User;
 import com.dev.backend.devstore.domain.user.UserRequestDTO;
 import com.dev.backend.devstore.domain.user.UserResponseDTO;
 import com.dev.backend.devstore.infra.security.TokenService;
+import com.dev.backend.devstore.repositories.UserRepository;
 import com.dev.backend.devstore.service.UserService;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
@@ -52,6 +54,16 @@ public class UserController {
         } else {
             return "verify_fail";
         }
+    }
+
+    @PutMapping
+    public ResponseEntity<UserResponseDTO> updateUser(@RequestBody @Valid UpdateUserDTO data) {
+        UserResponseDTO updatedUser = userService.updateUser(data);
+        if (updatedUser == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(updatedUser);
     }
 
 }

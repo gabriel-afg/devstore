@@ -29,9 +29,18 @@ public class ProductController {
         return ResponseEntity.ok(this.service.listProductByTitle(title));
     }
 
+    @GetMapping("/featured")
+    public ResponseEntity<List<ProductResponseDTO>> listPerFeatured(){
+        return ResponseEntity.ok(this.service.listProductByFeaturedTrue());
+    }
+
+    @GetMapping("/{slug}")
+    public ResponseEntity<List<ProductResponseDTO>> listPerSlug(@PathVariable String slug){
+        return ResponseEntity.ok(this.service.listProductBySlug(slug));
+    }
+
     @PostMapping
     public ResponseEntity<Product> create(@RequestBody @Valid ProductRequestDTO data){
-        System.out.println(data);
 
         Product newProduct = this.service.createProduct(data);
 

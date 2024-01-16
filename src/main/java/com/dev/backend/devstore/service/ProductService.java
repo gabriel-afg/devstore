@@ -28,4 +28,12 @@ public class ProductService {
     public List<ProductResponseDTO> listProductByTitle(String title) {
         return productRepository.findByTitleContainingIgnoreCase(title).stream().map(ProductResponseDTO::new).toList();
     }
+
+    public List<ProductResponseDTO> listProductBySlug(String slug) {
+        return productRepository.findBySlug(slug).stream().map(ProductResponseDTO::new).toList();
+    }
+
+    public List<ProductResponseDTO> listProductByFeaturedTrue(){
+        return productRepository.findByFeaturedIsTrue().stream().map(ProductResponseDTO::new).toList();
+    }
 }

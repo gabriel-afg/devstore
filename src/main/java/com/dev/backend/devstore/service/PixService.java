@@ -49,7 +49,7 @@ public class PixService {
 
         JSONObject body = new JSONObject();
         body.put("calendario", new JSONObject().put("expiracao", 3600));
-        body.put("devedor", new JSONObject().put("cpf", "12345678909").put("nome", "Francisco da Silva"));
+        //body.put("devedor", new JSONObject().put("cpf", "12345678909").put("nome", "Francisco da Silva"));
         body.put("valor", new JSONObject().put("original", pixChargeRequestDTO.valor()));
         body.put("chave", pixChargeRequestDTO.chave());
 

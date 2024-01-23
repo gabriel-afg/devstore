@@ -2,24 +2,21 @@ package com.dev.backend.devstore.controller;
 
 import com.dev.backend.devstore.domain.user.UpdateUserDTO;
 import com.dev.backend.devstore.domain.user.User;
-import com.dev.backend.devstore.domain.user.UserRequestDTO;
 import com.dev.backend.devstore.domain.user.UserResponseDTO;
 import com.dev.backend.devstore.infra.security.TokenService;
-import com.dev.backend.devstore.repositories.UserRepository;
 import com.dev.backend.devstore.service.UserService;
-import jakarta.mail.MessagingException;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
+@SecurityRequirement(name = "bearer-key")
 public class UserController {
 
     @Autowired
@@ -28,12 +25,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping()
-    public ResponseEntity<UserResponseDTO> registerUser(@RequestBody @Valid UserRequestDTO data) throws MessagingException, UnsupportedEncodingException {
-        User user = new User(data);
-        UserResponseDTO userSaved = userService.registerUser(user);
-        return new ResponseEntity<>(userSaved, HttpStatus.CREATED);
-    }
 
     @GetMapping()
     public ResponseEntity<Optional<User>> findUserById(@RequestHeader("Authorization") String token){

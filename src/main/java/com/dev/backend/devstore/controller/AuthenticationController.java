@@ -1,9 +1,9 @@
 package com.dev.backend.devstore.controller;
 
-import com.dev.backend.devstore.domain.user.AuthenticationDTO;
-import com.dev.backend.devstore.domain.user.LoginResponseDTO;
-import com.dev.backend.devstore.domain.user.User;
+import com.dev.backend.devstore.domain.user.*;
 import com.dev.backend.devstore.infra.security.TokenService;
+import com.dev.backend.devstore.service.UserService;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.UnsupportedEncodingException;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthenticationController {
@@ -24,6 +26,16 @@ public class AuthenticationController {
 
     @Autowired
     private TokenService tokenService;
+
+    @Autowired
+    private UserService userService;
+
+    @PostMapping("/register")
+    public ResponseEntity<UserResponseDTO> registerUser(@RequestBody @Valid UserRequestDTO data) throws MessagingException, UnsupportedEncodingException {
+        User user = new User(data);
+        UserResponseDTO userSaved = userService.registerUser(user);
+        return new ResponseEntity<>(userSaved, HttpStatus.CREATED);
+    }
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data){

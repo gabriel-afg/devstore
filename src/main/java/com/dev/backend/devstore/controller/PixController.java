@@ -10,6 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/v1/pix")
 @SecurityRequirement(name = "bearer-key")
@@ -34,6 +36,24 @@ public class PixController {
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(response.toString());
+    }
+
+    @GetMapping("/charges")
+    public ResponseEntity listCharges(){
+        Map<String, Object> response =  this.pixService.pixListCharges();
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
+    }
+
+    @GetMapping("/charges/{txid}")
+    public ResponseEntity detailCharge(@PathVariable String txid){
+        Map<String, Object> response = this.pixService.pixChargeDetail(txid);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
     }
 
     @PostMapping

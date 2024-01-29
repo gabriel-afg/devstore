@@ -9,10 +9,6 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,9 +43,6 @@ public class PixService {
     public JSONObject pixCreateCharge(PixChargeRequestDTO pixChargeRequestDTO){
         JSONObject options = configuringJsonObject();
 
-        System.out.println(pixChargeRequestDTO.chave());
-        System.out.println(pixChargeRequestDTO.valor());
-
         JSONObject body = new JSONObject();
         body.put("calendario", new JSONObject().put("expiracao", 3600));
         //body.put("devedor", new JSONObject().put("cpf", "12345678909").put("nome", "Francisco da Silva"));
@@ -63,7 +56,6 @@ public class PixService {
 
         try {
             EfiPay efi = new EfiPay(options);
-            System.out.println("esta aqui");
             JSONObject response = efi.call("pixCreateImmediateCharge", new HashMap<String,String>(), body);
             int idFromJson= response.getJSONObject("loc").getInt("id");
             String qrCodeImage = pixGenerateQRCode(String.valueOf(idFromJson));
@@ -146,6 +138,47 @@ public class PixService {
         }
     }
 
+    public Map<String, Object> pixListCharges(){
+        JSONObject options = configuringJsonObject();
+
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("inicio", "2024-01-01T16:01:35Z");
+        params.put("fim", "2024-02-01T16:01:35Z");
+
+        try {
+            EfiPay efi= new EfiPay(options);
+            Map<String, Object> response = efi.call("pixListCharges", params, new HashMap<String, Object>());
+
+            return response;
+        }catch (EfiPayException e){
+            System.out.println(e.getError());
+            System.out.println(e.getErrorDescription());
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    public Map<String, Object> pixChargeDetail(String txid){
+        JSONObject options = configuringJsonObject();
+
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("txid", txid);
+
+        try {
+            EfiPay efi= new EfiPay(options);
+
+            return efi.call("pixDetailCharge", params, new HashMap<String, Object>());
+        }catch (EfiPayException e){
+            System.out.println(e.getError());
+            System.out.println(e.getErrorDescription());
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
 
     private JSONObject configuringJsonObject(){
         Credentials credentials = new Credentials();

@@ -47,6 +47,9 @@ public class PixService {
     public JSONObject pixCreateCharge(PixChargeRequestDTO pixChargeRequestDTO){
         JSONObject options = configuringJsonObject();
 
+        System.out.println(pixChargeRequestDTO.chave());
+        System.out.println(pixChargeRequestDTO.valor());
+
         JSONObject body = new JSONObject();
         body.put("calendario", new JSONObject().put("expiracao", 3600));
         //body.put("devedor", new JSONObject().put("cpf", "12345678909").put("nome", "Francisco da Silva"));
@@ -60,10 +63,57 @@ public class PixService {
 
         try {
             EfiPay efi = new EfiPay(options);
+            System.out.println("esta aqui");
             JSONObject response = efi.call("pixCreateImmediateCharge", new HashMap<String,String>(), body);
-
             int idFromJson= response.getJSONObject("loc").getInt("id");
-            pixGenerateQRCode(String.valueOf(idFromJson));
+            String qrCodeImage = pixGenerateQRCode(String.valueOf(idFromJson));
+
+            response.put("qrCodeImage", qrCodeImage);
+
+            return response;
+
+        }catch (EfiPayException e){
+            System.out.println(e.getError());
+            System.out.println(e.getErrorDescription());
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    private String pixGenerateQRCode(String id){
+        JSONObject options = configuringJsonObject();
+
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("id", id);
+
+        try {
+            EfiPay efi= new EfiPay(options);
+            Map<String, Object> response = efi.call("pixGenerateQRCode", params, new HashMap<String, Object>());
+
+            System.out.println(response);
+
+            return (String) response.get("imagemQrcode");
+
+        }catch (EfiPayException e){
+            System.out.println(e.getError());
+            System.out.println(e.getErrorDescription());
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    public JSONObject listEvpKeys(){
+
+        JSONObject options = configuringJsonObject();
+
+        try {
+            EfiPay efi = new EfiPay(options);
+            JSONObject response = efi.call("pixListEvp", new HashMap<String,String>(), new JSONObject());
+            System.out.println(response);
 
             return response;
         }catch (EfiPayException e){
@@ -76,22 +126,16 @@ public class PixService {
         return null;
     }
 
-    private void pixGenerateQRCode(String id){
+    public void deleteKeyEVP(String chave){
         JSONObject options = configuringJsonObject();
 
         HashMap<String, String> params = new HashMap<String, String>();
-        params.put("id", id);
+        params.put("chave", chave);
 
         try {
-            EfiPay efi= new EfiPay(options);
-            Map<String, Object> response = efi.call("pixGenerateQRCode", params, new HashMap<String, Object>());
+            EfiPay efi = new EfiPay(options);
 
-            System.out.println(response);
-
-            File outputfile = new File("qrCodeImage.png");
-            ImageIO.write(ImageIO.read(new ByteArrayInputStream(javax.xml.bind.DatatypeConverter.parseBase64Binary(((String) response.get("imagemQrcode")).split(",")[1]))), "png", outputfile);
-            Desktop desktop = Desktop.getDesktop();
-            desktop.open(outputfile);
+            Map<String, Object> response = efi.call("pixDeleteEvp", params, new HashMap<String, Object>());
 
         }catch (EfiPayException e){
             System.out.println(e.getError());
@@ -101,6 +145,7 @@ public class PixService {
             System.out.println(e.getMessage());
         }
     }
+
 
     private JSONObject configuringJsonObject(){
         Credentials credentials = new Credentials();

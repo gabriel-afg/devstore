@@ -1,5 +1,8 @@
 package com.dev.backend.devstore.domain.user;
 
+import com.dev.backend.devstore.domain.transaction.Transaction;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -7,7 +10,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity(name = "users")
 @Table(name = "users")
@@ -16,6 +21,7 @@ import java.util.List;
 @Getter
 @Setter
 @EqualsAndHashCode(of = "id")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -32,6 +38,10 @@ public class User implements UserDetails {
     private boolean enabled;
 
     private UserRole role;
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private Set<Transaction> transactions = new HashSet<>();
 
     public User (UserRequestDTO data){
         this.name = data.name();

@@ -4,7 +4,6 @@ import br.com.efi.efisdk.EfiPay;
 import br.com.efi.efisdk.exceptions.EfiPayException;
 import com.dev.backend.devstore.domain.pix.PixChargeRequestDTO;
 import com.dev.backend.devstore.pix.Credentials;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -44,15 +43,15 @@ public class PixService {
         JSONObject options = configuringJsonObject();
 
         JSONObject body = new JSONObject();
-        body.put("calendario", new JSONObject().put("expiracao", 3600));
+        body.put("calendario", new JSONObject().put("expiracao", 300)); //5 minutos
         //body.put("devedor", new JSONObject().put("cpf", "12345678909").put("nome", "Francisco da Silva"));
         body.put("valor", new JSONObject().put("original", pixChargeRequestDTO.valor()));
         body.put("chave", pixChargeRequestDTO.chave());
 
-        JSONArray infoAdicionais = new JSONArray();
-        infoAdicionais.put(new JSONObject().put("nome", "Campo 1").put("valor", "Informação Adicional1 do PSP-Recebedor"));
-        infoAdicionais.put(new JSONObject().put("nome", "Campo 2").put("valor", "Informação Adicional2 do PSP-Recebedor"));
-        body.put("infoAdicionais", infoAdicionais);
+        //JSONArray infoAdicionais = new JSONArray();
+        //infoAdicionais.put(new JSONObject().put("nome", "Campo 1").put("valor", "Informação Adicional1 do PSP-Recebedor"));
+        //infoAdicionais.put(new JSONObject().put("nome", "Campo 2").put("valor", "Informação Adicional2 do PSP-Recebedor"));
+        //body.put("infoAdicionais", infoAdicionais);
 
         try {
             EfiPay efi = new EfiPay(options);
@@ -127,7 +126,7 @@ public class PixService {
         try {
             EfiPay efi = new EfiPay(options);
 
-            Map<String, Object> response = efi.call("pixDeleteEvp", params, new HashMap<String, Object>());
+            efi.call("pixDeleteEvp", params, new HashMap<String, Object>());
 
         }catch (EfiPayException e){
             System.out.println(e.getError());
@@ -168,8 +167,14 @@ public class PixService {
 
         try {
             EfiPay efi= new EfiPay(options);
+            Map<String, Object> response = efi.call("pixDetailCharge", params, new HashMap<String, Object>());
 
-            return efi.call("pixDetailCharge", params, new HashMap<String, Object>());
+            String idFromJson = String.valueOf(((Map<String, Object>)response.get("loc")).get("id"));
+            String qrCodeImage = pixGenerateQRCode(idFromJson);
+
+            response.put("qrCodeImage", qrCodeImage);
+
+            return response;
         }catch (EfiPayException e){
             System.out.println(e.getError());
             System.out.println(e.getErrorDescription());

@@ -11,7 +11,8 @@ FROM openjdk:17-jdk-slim
 EXPOSE 8080
 
 # Copie o certificado para o contêiner
-COPY --from=build ./certs/producao-542844-Sistema-de-Pagamento.p12 ./certs/producao-542844-Sistema-de-Pagamento.p12
+COPY ./certs/producao-542844-Sistema-de-Pagamento.p12 ./certs/producao-542844-Sistema-de-Pagamento.p12
+
 
 COPY --from=build /target/devstore-0.0.1-SNAPSHOT.jar app.jar
 

@@ -41,9 +41,9 @@ public class UserController {
     @GetMapping("/verify")
     public String verifyUser(@Param("code") String code){
         if(userService.verify(code)){
-            return "verify_success";
+            return "Usuario verificado com sucesso";
         } else {
-            return "verify_fail";
+            return "Não foi possivel efetuar a verificação";
         }
     }
 

@@ -16,7 +16,8 @@ public class EmailService {
     @Autowired
     private JavaMailSender emailSender;
 
-    private String verifyURL = "http://localhost:8080/user/verify?code=";
+    // private String verifyURL = "http://localhost:8080/user/verify?code="; Desenvolvimento
+    private String verifyURL = "https://devstore-l8vj.onrender.com/user/verify?code=";
 
     public void sendVerificationEmail(User user) throws MessagingException, UnsupportedEncodingException {
         String toAddres = user.getEmail();

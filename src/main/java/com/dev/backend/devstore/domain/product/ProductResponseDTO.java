@@ -1,5 +1,7 @@
 package com.dev.backend.devstore.domain.product;
 
+import java.util.List;
+
 public record ProductResponseDTO(
         String id,
         String title,

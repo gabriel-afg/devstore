@@ -34,6 +34,11 @@ public class ProductController {
         return ResponseEntity.ok(this.service.listProductByFeaturedTrue());
     }
 
+    @GetMapping("/noFeatured")
+    public ResponseEntity<List<ProductResponseDTO>> listProductNoFeatured(){
+        return ResponseEntity.ok(this.service.listProductWithoutFeatured());
+    }
+
     @GetMapping("/{slug}")
     public ResponseEntity<List<ProductResponseDTO>> listPerSlug(@PathVariable String slug){
         return ResponseEntity.ok(this.service.listProductBySlug(slug));

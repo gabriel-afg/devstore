@@ -6,12 +6,14 @@ import com.dev.backend.devstore.domain.user.UserResponseDTO;
 import com.dev.backend.devstore.infra.security.TokenService;
 import com.dev.backend.devstore.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @RestController
@@ -39,11 +41,11 @@ public class UserController {
     }
 
     @GetMapping("/verify")
-    public String verifyUser(@Param("code") String code){
+    public void verifyUser(@Param("code") String code, HttpServletResponse response) throws IOException {
         if(userService.verify(code)){
-            return "Usuario verificado com sucesso";
+            response.sendRedirect("https://devstore-front.vercel.app/email/confirmed");
         } else {
-            return "Não foi possivel efetuar a verificação";
+            System.out.println("Não foi possivel efetuar a verificação pelo email");
         }
     }
 
